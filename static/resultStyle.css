@@ -1,0 +1,247 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.header,
+.footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.left-column,
+.right-column {
+    width: 48%;
+    box-sizing: border-box;
+    /* Ensures padding and border are included in width */
+}
+
+.left-column {
+    order: 2;
+    /* Display this column second on larger screens */
+}
+
+.right-column {
+    order: 1;
+    /* Display this column first on larger screens */
+}
+
+h2 {
+    color: #34495e;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Sales Plot and Forecasted Sales Styles */
+#sales-plot,
+#forecasted-sales {
+    background-color: #ecf0f1;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+    overflow-y: auto;
+    /* Ensure both sections scroll if content overflows */
+}
+
+/* Scrollable Table Styling */
+#forecasted-sales table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#forecasted-sales th,
+#forecasted-sales td {
+    padding: 12px;
+    border: 1px solid #bdc3c7;
+    text-align: center;
+}
+
+#forecasted-sales th {
+    background-color: #3498db;
+    color: white;
+}
+
+#forecasted-sales td {
+    background-color: #ecf0f1;
+}
+
+/* Highlight rows */
+#forecasted-sales tr.highlight-low {
+    background-color: lightcoral !important;
+    /* Ensure background color is applied */
+    color: rgb(182, 53, 53);
+    /* Ensure text is readable on dark background */
+    font-weight: bold;
+}
+
+#forecasted-sales tr.highlight-high {
+    background-color: lightgreen !important;
+    /* Ensure background color is applied */
+    color: rgb(21, 194, 88);
+    /* Ensure text is readable on light background */
+    font-weight: bold;
+}
+
+/* Increase the width of the Date column */
+#forecasted-sales td:nth-child(2),
+#forecasted-sales th:nth-child(2) {
+    width: 150px;
+}
+
+/* Back Button Styling */
+.back-button {
+    display: inline-block;
+    color: white;
+    background-color: #2980b9;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.back-button:hover {
+    background-color: #1a5980;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+
+    .left-column,
+    .right-column {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+        /* Add spacing between stacked sections */
+    }
+
+    .left-column {
+        order: 1;
+        /* Switch order on smaller screens */
+    }
+
+    .right-column {
+        order: 2;
+        /* Switch order on smaller screens */
+    }
+
+    .content {
+        flex-direction: column;
+        /* Stack columns vertically */
+        align-items: stretch;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.3em;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .back-button {
+        width: 100%;
+        text-align: center;
+        padding: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    .back-button {
+        padding: 10px;
+    }
+}
+
+/* Container for the download button */
+.download-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    /* Adjust as needed */
+}
+
+/* Button Styling */
+.btn {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-primary:active {
+    background-color: #1a5980;
+    color: #d1d1d1;
+}
+
+.btn-primary:focus {
+    outline: none;
+}

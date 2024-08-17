@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #0066cc;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+form {
+    background-color: #e6f7ff;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #004080;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #0099cc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Increase the size of the dropdown */
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #0099cc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    background-color: #f2faff;
+}
+
+button {
+    background-color: #0099cc;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #007399;
+}
+
+h2 {
+    color: #004080;
+    text-align: center;
+    margin-top: 40px;
+}
+
+#results {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 2px solid #0099cc;
+    text-align: center;
+    background-color: #f2faff;
+}
+
+th {
+    background-color: #b3e0ff;
+}
+
+/* Doctor Cartoon Image */
+body::before {
+    content: "";
+    background-image: url('https://example.com/doctor-cartoon.png');
+    /* Replace with the actual URL */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top right;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 200px;
+    height: 200px;
+    opacity: 0.5;
+}
