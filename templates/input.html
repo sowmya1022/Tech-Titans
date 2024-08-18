@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Forecasting</title>
     <link rel="stylesheet" href="/static/Style.css">
-
 </head>
 
 <body>
     <h1>Sales Forecasting</h1>
-    <form id="forecastForm" method="POST">
+    <form id="forecastForm" method="POST" onsubmit="return validateDates()">
         <label for="from_date">Start Date:</label>
         <input type="date" id="from_date" name="from_date" required>
         <br>
@@ -32,63 +31,20 @@
         <br>
         <button type="submit" value="submit">Forecast</button>
     </form>
-    <!-- <h2>Forecast Results:</h2>
-    <div id="results"></div> -->
 
-    <!-- <script>
-        document.getElementById('forecastForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+    <script>
+        function validateDates() {
+            let fromDate = new Date(document.getElementById('from_date').value);
+            let toDate = new Date(document.getElementById('to_date').value);
 
-            let start_date = document.getElementById('start_date').value;
-            let end_date = document.getElementById('end_date').value;
+            if (fromDate >= toDate) {
+                alert("Please enter valid dates.");
+                return false; // Prevent form submission
+            }
 
-            fetch('/forecast', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: start_date=${start_date}&end_date=${end_date}
-            })
-                .then(response => response.json())
-                .then(data => {
-                    let resultsDiv = document.getElementById('results');
-                    resultsDiv.innerHTML = '<table border="1"><tr><th>Date</th><th>Forecasted Sales</th><th>Lower Bound</th><th>Upper Bound</th></tr>';
-
-                    data.forEach(row => {
-                        resultsDiv.innerHTML += <tr><td>${new Date(row.Date).toLocaleDateString()}</td><td>${row['Forecasted Sales']}</td><td>${row['Lower Bound']}</td><td>${row['Upper Bound']}</td></tr>;
-                    });
-
-                    resultsDiv.innerHTML += '</table>';
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    </script> -->
+            return true; // Allow form submission
+        }
+    </script>
 </body>
 
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Sales Forecast</title>
-</head>
-
-<body>
-    <h2>Sales Forecast</h2>
-    <form method="POST">
-        <label for="from_date">From Date:</label>
-        <input type="text" id="from_date" name="from_date" placeholder="dd-mm-yyyy" required><br><br>
-        <label for="to_date">To Date:</label>
-        <input type="text" id="to_date" name="to_date" placeholder="dd-mm-yyyy" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-
-    {% if forecast_sales %}
-    <h3>Forecasted Sales:</h3>
-    {{ forecast_sales | safe }}
-    {% endif %}
-</body>
-
-</html> -->

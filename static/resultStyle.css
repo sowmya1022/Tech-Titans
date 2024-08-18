@@ -1,11 +1,14 @@
+/* Base styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #2b739a; /* Metallic blue background */
     color: #333;
     margin: 0;
     padding: 20px;
+    transition: background-color 0.3s ease; /* Smooth background transition */
 }
 
+/* Container and other elements might need adjustments for contrast */
 .container {
     max-width: 1400px;
     margin: 0 auto;
@@ -13,10 +16,10 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease; /* Smooth shadow transition */
 }
 
-.header,
-.footer {
+.header, .footer {
     text-align: center;
     margin-bottom: 20px;
 }
@@ -25,6 +28,7 @@ h1 {
     color: #2c3e50;
     font-size: 2.5em;
     margin-bottom: 10px;
+    transition: color 0.3s ease; /* Smooth color transition */
 }
 
 .content {
@@ -34,27 +38,21 @@ h1 {
     flex-wrap: wrap;
 }
 
-.left-column,
-.right-column {
+.left-column, .right-column {
     width: 48%;
     box-sizing: border-box;
-    /* Ensures padding and border are included in width */
+    transition: transform 0.3s ease; /* Smooth transformation on hover */
 }
 
-.left-column {
-    order: 2;
-    /* Display this column second on larger screens */
-}
-
-.right-column {
-    order: 1;
-    /* Display this column first on larger screens */
+.left-column:hover, .right-column:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
 }
 
 h2 {
     color: #34495e;
     margin-bottom: 15px;
     font-size: 1.5em;
+    transition: color 0.3s ease; /* Smooth color transition */
 }
 
 p {
@@ -62,65 +60,156 @@ p {
     margin-bottom: 20px;
 }
 
-/* Sales Plot and Forecasted Sales Styles */
-#sales-plot,
-#forecasted-sales {
-    background-color: #ecf0f1;
+#sales-plot, #forecasted-sales {
+    background-color: #f0f6fb;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     max-height: 400px;
     overflow-y: auto;
-    /* Ensure both sections scroll if content overflows */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
 }
 
-/* Scrollable Table Styling */
+#forecasted-sales {
+    background-color: #f0f6fb;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+    overflow-y: auto;
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
 #forecasted-sales table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Ensures table width adapts to the container */
 }
 
-#forecasted-sales th,
-#forecasted-sales td {
-    padding: 12px;
+#forecasted-sales th, #forecasted-sales td {
+    padding: 15px; /* Increased padding for larger cells */
     border: 1px solid #bdc3c7;
     text-align: center;
+    transition: background-color 0.3s ease; /* Smooth background color transition */
 }
 
 #forecasted-sales th {
-    background-color: #3498db;
+    background-color: #2b739a;
     color: white;
+    position: relative; /* Necessary for positioning icons */
+    padding-right: 30px; /* Add space for icons */
 }
 
-#forecasted-sales td {
-    background-color: #ecf0f1;
+/* Add icons to table headers */
+#forecasted-sales th::after {
+    content: '';
+    display: inline-block;
+    width: 16px; /* Width of the icon */
+    height: 16px; /* Height of the icon */
+    margin-left: 8px; /* Space between text and icon */
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    position: absolute;
+    right: 10px; /* Position the icon to the right */
+    top: 50%;
+    transform: translateY(-50%); /* Center icon vertically */
 }
 
-/* Highlight rows */
+/* Example icons for specific headers */
+#forecasted-sales th:nth-child(1)::after {
+    background-image: url('/images/contrast.png'); /* Replace with actual serial number icon URL */
+}
+
+#forecasted-sales th:nth-child(2)::after {
+    background-image: url('/images/date-icon.png'); /* Replace with actual date icon URL */
+}
+
+#forecasted-sales th:nth-child(3)::after {
+    background-image: url('/images/forecast-icon.png'); /* Replace with actual forecasted sales icon URL */
+}
+
+#forecasted-sales th:nth-child(4)::after {
+    background-image: url('/images/lower-bound-icon.png'); /* Replace with actual lower bound icon URL */
+}
+
+#forecasted-sales th:nth-child(5)::after {
+    background-image: url('/images/upper-bound-icon.png'); /* Replace with actual upper bound icon URL */
+}
+
 #forecasted-sales tr.highlight-low {
     background-color: lightcoral !important;
-    /* Ensure background color is applied */
     color: rgb(182, 53, 53);
-    /* Ensure text is readable on dark background */
     font-weight: bold;
+    transition: background-color 0.3s ease; /* Smooth background color transition */
 }
 
 #forecasted-sales tr.highlight-high {
     background-color: lightgreen !important;
-    /* Ensure background color is applied */
     color: rgb(21, 194, 88);
-    /* Ensure text is readable on light background */
     font-weight: bold;
+    transition: background-color 0.3s ease; /* Smooth background color transition */
 }
 
-/* Increase the width of the Date column */
-#forecasted-sales td:nth-child(2),
-#forecasted-sales th:nth-child(2) {
-    width: 150px;
+.summary-box p, 
+.explanation-box p, 
+.recommendation-box p {
+    margin-left: 0px;
+    text-align: justify; /* Added to justify text */
 }
 
-/* Back Button Styling */
+
+
+.summary-box, .explanation-box, .recommendation-box {
+    background-color: #f0f6fb;
+    border: 1px solid #dceaf5;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth background and shadow transition */
+}
+
+.summary-box:hover, .explanation-box:hover, .recommendation-box:hover {
+    background-color: #eaf3fc;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+.summary-box::before, .explanation-box::before, .recommendation-box::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+}
+
+.summary-box::before {
+    background-image: url('/images/contract.png'); /* Replace with actual summary icon URL */
+}
+
+.explanation-box::before {
+    background-image: url('/images/explanation-icon.png'); /* Replace with actual explanation icon URL */
+}
+
+.recommendation-box::before {
+    background-image: url('/images/recommendation-icon.png'); /* Replace with actual recommendation icon URL */
+}
+
+.summary-box h2, .explanation-box h2, .recommendation-box h2 {
+    margin-left: 80px; /* Adjust for icon width */
+    font-size: 1.5em;
+    color: #2980b9;
+}
+
+.summary-box p, .explanation-box p, .recommendation-box p {
+    margin-left: 80px;
+}
+
 .back-button {
     display: inline-block;
     color: white;
@@ -128,38 +217,33 @@ p {
     padding: 10px 20px;
     border-radius: 5px;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth color and transform transition */
     margin-top: 20px;
 }
 
 .back-button:hover {
     background-color: #1a5980;
+    transform: scale(1.05); /* Slight zoom effect on hover */
 }
 
 /* Responsive Design */
 @media screen and (max-width: 1024px) {
-
-    .left-column,
-    .right-column {
+    .left-column, .right-column {
         width: 100%;
         margin-right: 0;
         margin-bottom: 20px;
-        /* Add spacing between stacked sections */
     }
 
     .left-column {
         order: 1;
-        /* Switch order on smaller screens */
     }
 
     .right-column {
         order: 2;
-        /* Switch order on smaller screens */
     }
 
     .content {
         flex-direction: column;
-        /* Stack columns vertically */
         align-items: stretch;
     }
 }
@@ -205,43 +289,20 @@ p {
         padding: 10px;
     }
 }
-
-/* Container for the download button */
-.download-button-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-    /* Adjust as needed */
-}
-
-/* Button Styling */
-.btn {
-    display: inline-block;
-    font-size: 16px;
-    font-weight: bold;
+.download-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
     text-align: center;
     text-decoration: none;
-    border: none;
+    display: inline-block;
+    font-size: 16px;
     border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.btn-primary {
-    background-color: #3498db;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-}
-
-.btn-primary:active {
-    background-color: #1a5980;
-    color: #d1d1d1;
-}
-
-.btn-primary:focus {
-    outline: none;
+.download-button:hover {
+    background-color: #45a049;
 }

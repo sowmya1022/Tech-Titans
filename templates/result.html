@@ -4,66 +4,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Forecast Results</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='resultStyle.css') }}">
+    <title>Sales Forecast Results for {{ product_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='resultstyle.css') }}">
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <h1>Sales Forecast Results</h1>
+            <h1>Sales Forecast Results for {{ product_name }}</h1>
         </div>
+
         <div class="content">
             <div class="right-column">
                 <div id="sales-plot">
                     <h2>Sales Plot</h2>
                     {{ sales_plot|safe }}
                 </div>
-                <div class="summary-section">
-                    <h2>Best Model Summary</h2>
-                    <p>{{ summary }}</p>
 
+                <!-- Best Model Summary Section -->
+                <div class="summary-box">
+                    <h2>Summary</h2>
+                    <p>{{ summary }}</p>
+                </div>
+
+                <!-- Recommendations Section -->
+                <div class="recommendation-box">
                     <h2>Recommendations</h2>
                     <p>{{ recommendations }}</p>
                 </div>
             </div>
+
             <div class="left-column">
                 <div id="forecasted-sales">
                     <h2>Forecasted Sales</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Serial Number</th>
-                                <th>Date</th>
-                                <th>Forecasted Sales</th>
-                                <th>Lower Bound</th>
-                                <th>Upper Bound</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in forecast_sales %}
-                            <tr class="{{ row.Highlight }}">
-                                <td>{{ row['Serial Number'] }}</td>
-                                <td>{{ row['Date'].strftime('%Y-%m-%d') }}</td>
-                                <td>{{ row['Forecasted Sales'] }}</td>
-                                <td>{{ row['Lower Bound'] }}</td>
-                                <td>{{ row['Upper Bound'] }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-
-                    </table>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Serial Number</th>
+                                    <th>Date</th>
+                                    <th>Forecasted Sales</th>
+                                    <th>Lower Bound</th>
+                                    <th>Upper Bound</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in forecast_sales %}
+                                <tr class="{{ row.Highlight }}">
+                                    <td>{{ row['Serial Number'] }}</td>
+                                    <td>{{ row['Date'].strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ row['Forecasted Sales'] }}</td>
+                                    <td>{{ row['Lower Bound'] }}</td>
+                                    <td>{{ row['Upper Bound'] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="explanation-section">
+
+                <!-- Explanation Section -->
+                <div class="explanation-box">
                     <h2>Explanation</h2>
                     <p>{{ explanation }}</p>
                 </div>
             </div>
         </div>
-        <div class="footer">
+
+        <!-- <div class="footer">
             <a href="/" class="back-button">Back to Forecast</a>
-        </div>
+        </div> -->
     </div>
+    <div class="footer">
+        <form method="POST" action="{{ url_for('download_pdf') }}">
+            <input type="hidden" name="from_date" value="{{ request.form['from_date'] }}">
+            <input type="hidden" name="to_date" value="{{ request.form['to_date'] }}">
+            <input type="hidden" name="product" value="{{ request.form['product'] }}">
+            <button type="submit" name="download_pdf" class="download-button">Download as PDF</button>
+        </form>
+        <a href="/" class="back-button">Back to Forecast</a>
+    </div>
+
     <script>
         const forecastedSales = document.getElementById('forecasted-sales');
         if (forecastedSales) {
@@ -71,9 +92,6 @@
             forecastedSales.style.overflowY = 'scroll';
         }
     </script>
-    <div>
-        <a href="{{ url_for('download_pdf') }}" class="btn btn-primary">Download PDF</a>
-    </div>
 </body>
 
 </html>

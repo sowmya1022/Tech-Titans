@@ -1,74 +1,86 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f8ff;
+    font-family: 'Roboto', sans-serif;
+    background-color: #eef5f9;
     color: #333;
     margin: 0;
     padding: 20px;
 }
 
 h1 {
-    color: #0066cc;
+    color: #00509e;
     text-align: center;
     margin-bottom: 30px;
     font-size: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
 }
 
 form {
-    background-color: #e6f7ff;
-    border-radius: 10px;
-    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
     max-width: 500px;
     margin: 0 auto 20px auto;
-    box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+    box-shadow: 0 0 20px rgba(0, 80, 158, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0, 80, 158, 0.25);
 }
 
 label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+    margin-bottom: 10px;
+    font-weight: 600;
     color: #004080;
 }
 
-input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 2px solid #0099cc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-/* Increase the size of the dropdown */
+input[type="date"],
 select {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 20px;
-    border: 2px solid #0099cc;
-    border-radius: 5px;
+    border: 2px solid #00509e;
+    border-radius: 8px;
     box-sizing: border-box;
     font-size: 1em;
-    background-color: #f2faff;
+    background-color: #f7fbff;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="date"]:focus,
+select:focus {
+    border-color: #003f7d;
+    background-color: #e6f2ff;
+    outline: none;
 }
 
 button {
-    background-color: #0099cc;
+    background-color: #00509e;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background-color: #007399;
+    background-color: #003f7d;
+    transform: translateY(-3px);
 }
 
 h2 {
     color: #004080;
     text-align: center;
-    margin-top: 40px;
+    margin-top: 50px;
+    font-size: 2em;
+    letter-spacing: 1.2px;
 }
 
 #results {
@@ -80,25 +92,36 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    box-shadow: 0 0 15px rgba(0, 80, 158, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 th,
 td {
-    padding: 12px;
-    border: 2px solid #0099cc;
+    padding: 14px;
+    border: 2px solid #00509e;
     text-align: center;
-    background-color: #f2faff;
+    background-color: #f7fbff;
 }
 
 th {
     background-color: #b3e0ff;
+    font-weight: 700;
+}
+
+td {
+    transition: background-color 0.3s ease;
+}
+
+td:hover {
+    background-color: #e6f2ff;
 }
 
 /* Doctor Cartoon Image */
 body::before {
     content: "";
     background-image: url('https://example.com/doctor-cartoon.png');
-    /* Replace with the actual URL */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: top right;
@@ -107,5 +130,92 @@ body::before {
     right: 20px;
     width: 200px;
     height: 200px;
-    opacity: 0.5;
+    opacity: 0.4;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    form {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    body::before {
+        width: 150px;
+        height: 150px;
+        top: 15px;
+        right: 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    form {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    label,
+    input[type="date"],
+    select {
+        font-size: 0.9em;
+    }
+
+    table th, table td {
+        padding: 12px;
+    }
+
+    button {
+        padding: 8px 15px;
+        font-size: 0.8em;
+    }
+
+    body::before {
+        width: 120px;
+        height: 120px;
+        top: 10px;
+        right: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+        margin-top: 30px;
+    }
+
+    form {
+        padding: 10px;
+        box-shadow: none;
+    }
+
+    table th, table td {
+        padding: 10px;
+        font-size: 0.8em;
+    }
+
+    button {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
+    body::before {
+        display: none; /* Hide the cartoon image on very small screens */
+    }
 }

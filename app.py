@@ -1,39 +1,28 @@
 from flask import Flask, request, render_template, make_response, session, send_file
+from flask import Flask, request, render_template, make_response, session
 import joblib
 import pandas as pd
 import requests
-import pdfkit
-import io
-import base64
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
-from io import BytesIO
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
-from reportlab.lib.units import inch 
-from flask import Flask, make_response, session, send_file
+import pdfkit
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image
 from reportlab.lib import colors
-import io
-import matplotlib.pyplot as plt
-import pandas as pd
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from io import BytesIO
+
 
 app = Flask(__name__)
 
-app.secret_key = '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'  # Unique and secret key
-
-API_TOKEN = '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'  # Replace with your actual API token
+# Your Hugging Face API token
+API_TOKEN = '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'
 
 headers = {
     'Authorization': f'Bearer {API_TOKEN}',
 }
-
 
 def generate_forecast_explanation(forecast_df, product_name, product_uses):
     try:
@@ -80,7 +69,6 @@ def generate_forecast_explanation(forecast_df, product_name, product_uses):
     
     return explanation
 
-
 def get_summary(forecast_df, product_name, product_uses):
     explanation = generate_forecast_explanation(forecast_df, product_name, product_uses)
     
@@ -106,13 +94,6 @@ def get_summary(forecast_df, product_name, product_uses):
     except (KeyError, IndexError, ValueError) as e:
         print(f"Error during summarization: {e}")
         return "There was an issue generating the summary. Please try again later."
-
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.io as pio
-
-import plotly.graph_objs as go
-import plotly.io as pio
 
 def create_plot(forecast_df):
     # Create a figure
@@ -186,16 +167,7 @@ def create_plot(forecast_df):
     # Generate HTML for web interface
     graph_html = pio.to_html(fig, full_html=False)
 
-    # Generate PNG for PDF
-    image_bytes = fig.to_image(format="png")
-
-    return graph_html, image_bytes
-
-    
-
-
-
-
+    return graph_html
 
 def get_recommendations(forecast_df):
     recommendation = []
@@ -210,45 +182,221 @@ def get_recommendations(forecast_df):
     
     return "\n".join(recommendation)
 
+@app.route('/download-pdf', methods=['POST'])
+def download_pdf():
+    # Get the same inputs as in the forecast route
+    from_date = request.form['from_date']
+    to_date = request.form['to_date']
+    product_name = request.form['product']
+
+    # Repeat the logic for generating forecast data (as in the / route)
+    # Load models, create forecasts, and generate explanations, summaries, plots, etc.
+
+    # Use the same logic as in the forecast function to generate forecast data
+    model_paths = {
+        'Cetirizine': {
+            'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Cetirizine_rating_new.joblib',
+            'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Cetirizine_new.joblib',
+            'uses': "relieving allergy symptoms such as hay fever, sneezing, runny nose, and itchy eyes"
+        },
+        'Diclofenac': {
+            'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Diclofenac_new (1).joblib',
+            'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Diclofenac_rating_new.joblib',
+            'uses': "treating pain and inflammation, particularly in conditions like arthritis"
+        },
+        'Aspirin': {
+            'rating': r'C:\Users\shari\Downloads\Demand web\models\rating_forecast_model.joblib',
+            'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Aspirin_new.joblib',
+            'uses': "relieving pain, reducing fever, and acting as an anti-inflammatory"
+        },
+        'Paracetamol': {
+            'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Paracetamol_rating_new.joblib',
+            'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Paracetamol_NEW (1).joblib',
+            'uses': "relieving pain and reducing fever"
+        },
+        'Zolpidem': {
+            'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Zolpidem_rating_new.joblib',
+            'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Zolpidem.joblib',
+            'uses': "treating insomnia and helping with sleep initiation"
+        },
+        'Benzodiazepines': {
+            'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Benzodiazepines_rating_new.joblib',
+            'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Benzodiazepines.joblib',
+            'uses': "treating anxiety, seizures, and insomnia"
+        }
+
+    }
+
+    if product_name not in model_paths:
+        return f"Error: Unsupported product '{product_name}'"
+
+    models = model_paths[product_name]
+    rating_model_path = models['rating']
+    sales_model_path = models['sales']
+    product_uses = models['uses']
+
+    # Load the models
+    rating_model = joblib.load(rating_model_path)
+    sales_model = joblib.load(sales_model_path)
+
+    # Convert the date input into a date range
+    forecast_start = pd.to_datetime(from_date, format='%Y-%m-%d')
+    forecast_end = pd.to_datetime(to_date, format='%Y-%m-%d')
+    forecast_index = pd.date_range(start=forecast_start, end=forecast_end, freq='M')
+
+    # Forecast future ratings using the loaded rating model
+    rating_forecast = rating_model.get_forecast(steps=len(forecast_index))
+    forecast_rating_mean = rating_forecast.predicted_mean.round().astype(int).values.reshape(-1, 1)
+
+    # Use the forecasted ratings as exogenous variables to forecast sales
+    sales_forecast = sales_model.get_forecast(steps=len(forecast_index), exog=forecast_rating_mean)
+    forecast_sales_mean = sales_forecast.predicted_mean
+    forecast_sales_conf_int = sales_forecast.conf_int()
 
 
+    # Prepare the sales forecast result for display
+    forecast_sales_df = pd.DataFrame({
+        'Date': forecast_index,
+        'Forecasted Sales': forecast_sales_mean,
+        'Lower Bound': forecast_sales_conf_int.iloc[:, 0].clip(lower=0),  # Convert negative values to zero
+        'Upper Bound': forecast_sales_conf_int.iloc[:, 1]
+    })
+
+    # Round the forecasted sales and bounds to 2 decimal places
+    forecast_sales_df['Forecasted Sales'] = forecast_sales_df['Forecasted Sales'].round(2)
+    forecast_sales_df['Lower Bound'] = forecast_sales_df['Lower Bound'].round(2)
+    forecast_sales_df['Upper Bound'] = forecast_sales_df['Upper Bound'].round(2)
+
+    # Add Serial Number Column
+    forecast_sales_df.reset_index(drop = True, inplace=True)
+    forecast_sales_df.index += 1  # Make serial number start from 1
+    forecast_sales_df.index.name = 'Serial Number'
+    forecast_sales_df.reset_index(inplace=True)
+    
+    # Identify the rows with the lowest and highest sales
+    min_sales = forecast_sales_df['Forecasted Sales'].min()
+    max_sales = forecast_sales_df['Forecasted Sales'].max()
+
+    # Adding CSS class for highlighting only the rows with the highest and lowest sales
+    forecast_sales_df['Highlight'] = forecast_sales_df['Forecasted Sales'].apply(
+        lambda x: 'highlight-low' if x == min_sales else ('highlight-high' if x == max_sales else '')
+    )
+
+    # Generate the explanation and summary from the BART model
+    explanation = generate_forecast_explanation(forecast_sales_df, product_name, product_uses)
+    summary = get_summary(forecast_sales_df, product_name, product_uses)
+
+    sales_plot = create_plot(forecast_sales_df)
+
+    # Generate recommendations
+    recommendations = get_recommendations(forecast_sales_df)
+
+
+    # Generate the PDF with ReportLab
+    buffer = BytesIO()
+    pdf = SimpleDocTemplate(buffer, pagesize=letter)
+
+    elements = []
+
+    # Title
+    styles = getSampleStyleSheet()
+    title = f"{product_name} Forecast Report"
+    elements.append(Paragraph(title, styles['Title']))
+    elements.append(Spacer(1, 0.2 * inch))
+
+    # Summary
+    elements.append(Paragraph("Summary:", styles['Heading2']))
+    elements.append(Paragraph(summary, styles['BodyText']))
+    elements.append(Spacer(1, 0.2 * inch))
+
+    # Explanation
+    elements.append(Paragraph("Explanation:", styles['Heading2']))
+    elements.append(Paragraph(explanation, styles['BodyText']))
+    elements.append(Spacer(1, 0.2 * inch))
+
+    # Recommendations
+    elements.append(Paragraph("Recommendations:", styles['Heading2']))
+    elements.append(Paragraph(recommendations, styles['BodyText']))
+    elements.append(Spacer(1, 0.2 * inch))
+
+    # Sales Forecast Table
+    table_data = [forecast_sales_df.columns.to_list()] + forecast_sales_df.values.tolist()
+    table = Table(table_data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    elements.append(Spacer(1, 0.2 * inch))
+    elements.append(table)
+    elements.append(Spacer(1, 0.2 * inch))
+
+    # Build the PDF
+    pdf.build(elements)
+
+    # Move the buffer position to the start
+    buffer.seek(0)
+
+    # Send the PDF as a response
+    response = make_response(buffer.getvalue())
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename={product_name}_forecast.pdf'
+
+    return response
 
 @app.route('/', methods=['GET', 'POST'])
 def forecast():
     if request.method == 'POST':
         from_date = request.form['from_date']
         to_date = request.form['to_date']
-        product = request.form['product']
+        product_name = request.form['product']
 
-        print(f"Selected product: {product}")
+        model_paths = {
+            'Cetirizine': {
+                'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Cetirizine_rating_new.joblib',
+                'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Cetirizine_new.joblib',
+                'uses': "relieving allergy symptoms such as hay fever, sneezing, runny nose, and itchy eyes"
+            },
+            'Diclofenac': {
+                'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Diclofenac_new (1).joblib',
+                'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Diclofenac_rating_new.joblib',
+                'uses': "treating pain and inflammation, particularly in conditions like arthritis"
+            },
+            'Aspirin': {
+                'rating': r'C:\Users\shari\Downloads\Demand web\models\rating_forecast_model.joblib',
+                'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Aspirin_new.joblib',
+                'uses': "relieving pain, reducing fever, and acting as an anti-inflammatory"
+            },
+            'Paracetamol': {
+                'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Paracetamol_rating_new.joblib',
+                'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Paracetamol_NEW (1).joblib',
+                'uses': "relieving pain and reducing fever"
+            },
+            'Zolpidem': {
+                'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Zolpidem_rating_new.joblib',
+                'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Zolpidem.joblib',
+                'uses': "treating insomnia and helping with sleep initiation"
+            },
+            'Benzodiazepines': {
+                'rating': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Benzodiazepines_rating_new.joblib',
+                'sales': r'C:\Users\shari\Downloads\Demand web\models\sarimax_model_Benzodiazepines.joblib',
+                'uses': "treating anxiety, seizures, and insomnia"
+            }
 
-        # Define model paths and product uses based on the selected product
-        if product == 'Zolpidem':
-            rating_model_path = r'C:\Users\shari\OneDrive\Desktop\Demand web\model\sarimax_model_Zolpidem_rating_new.joblib'
-            sales_model_path = r'C:\Users\shari\OneDrive\Desktop\Demand web\model\sarimax_model_Zolpidem.joblib'
-            product_uses = "relieving allergy symptoms such as hay fever, sneezing, runny nose, and itchy eyes"
-        # elif product == 'Diclofenac':
-        #     rating_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Diclofenac_rating_new.joblib'
-        #     sales_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Diclofenac_new (1).joblib'
-        #     product_uses = "treating pain and inflammation, particularly in conditions like arthritis"
-        # elif product == 'Aspirin':
-        #     rating_model_path = r'C:\Users\mahat\Downloads\Demand web\models\rating_forecast_model.joblib'
-        #     sales_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Aspirin_new.joblib'
-        #     product_uses = "relieving pain, reducing fever, and acting as an anti-inflammatory"
-        # elif product == 'Paracetamol':
-        #     rating_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Paracetamol_rating_new.joblib'
-        #     sales_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Paracetamol_NEW (1).joblib'
-        #     product_uses = "relieving pain and reducing fever"
-        # elif product == 'Zolpidem':
-        #     rating_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Zolpidem_rating_new.joblib'
-        #     sales_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Zolpidem.joblib'
-        #     product_uses = "treating insomnia and helping with sleep initiation"
-        # elif product == 'Benzodiazepines':
-        #     rating_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Benzodiazepines_rating_new.joblib'
-        #     sales_model_path = r'C:\Users\mahat\Downloads\Demand web\models\sarimax_model_Benzodiazepines.joblib'
-        #     product_uses = "treating anxiety, seizures, and insomnia"
-        # else:
-        #     return "Product not found", 400
+    }
+
+        if product_name not in model_paths:
+            return f"Error: Unsupported product '{product_name}'"
+
+        models = model_paths[product_name]
+        rating_model_path = models['rating']
+        sales_model_path = models['sales']
+        product_uses = models['uses']
 
         # Load the models
         rating_model = joblib.load(rating_model_path)
@@ -267,6 +415,7 @@ def forecast():
         sales_forecast = sales_model.get_forecast(steps=len(forecast_index), exog=forecast_rating_mean)
         forecast_sales_mean = sales_forecast.predicted_mean
         forecast_sales_conf_int = sales_forecast.conf_int()
+
 
         # Prepare the sales forecast result for display
         forecast_sales_df = pd.DataFrame({
@@ -296,124 +445,27 @@ def forecast():
             lambda x: 'highlight-low' if x == min_sales else ('highlight-high' if x == max_sales else '')
         )
 
-
-        # # Remove the 'Class' column
-        # forecast_sales_df = forecast_sales_df.drop(columns=['Class'])
-
-        # Format the dates to display only the date part
-        # forecast_sales_df['Date'] = forecast_sales_df['Date'].dt.strftime('%Y-%m-%d')
-
         # Generate the explanation and summary from the BART model
-        explanation = generate_forecast_explanation(forecast_sales_df, product, product_uses)
-        summary = get_summary(forecast_sales_df, product, product_uses)
+        explanation = generate_forecast_explanation(forecast_sales_df, product_name, product_uses)
+        summary = get_summary(forecast_sales_df, product_name, product_uses)
 
-        graph_html, sales_plot_image = create_plot(forecast_sales_df)
+        sales_plot = create_plot(forecast_sales_df)
 
         # Generate recommendations
         recommendations = get_recommendations(forecast_sales_df)
 
 
-        # Store forecast data, explanation, summary, and recommendations in session
-        session['forecast_sales_df'] = forecast_sales_df.to_json()
-        session['explanation'] = explanation
-        session['summary'] = summary
-        session['recommendations'] = recommendations
-
-        # Pass the data, explanation, summary, and recommendations to result.html
         return render_template(
-            'result.html', 
+            'result.html',
+            product_name=product_name,
             forecast_sales=forecast_sales_df.to_dict(orient='records'),
             explanation=explanation,
-            summary=summary, 
+            summary=summary,
             recommendations=recommendations,
-            sales_plot=graph_html
+            sales_plot=sales_plot
         )
 
     return render_template('input.html')
-    
-@app.route('/download_pdf')
-def download_pdf():
-    # Retrieve forecast sales data, explanation, summary, and recommendations from session
-    forecast_sales_json = session.get('forecast_sales_df', '{}')
-    explanation = session.get('explanation', '')
-    summary = session.get('summary', '')
-    recommendations = session.get('recommendations', '')
-
-    if not forecast_sales_json:
-        return "No forecast data available for download."
-
-    forecast_sales_df = pd.read_json(forecast_sales_json)
-
-    # Generate graph image
-    img_buffer = io.BytesIO()
-    plt.figure(figsize=(10, 6))
-    plt.plot(forecast_sales_df['Date'], forecast_sales_df['Forecasted Sales'], label='Forecasted Sales')
-    plt.fill_between(forecast_sales_df['Date'], forecast_sales_df['Lower Bound'], forecast_sales_df['Upper Bound'], color='lightgrey', alpha=0.5)
-    plt.title('Sales Forecast')
-    plt.xlabel('Date')
-    plt.ylabel('Sales')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig(img_buffer, format='png')
-    img_buffer.seek(0)  # Rewind the buffer to the beginning
-
-    # Generate PDF
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    content = []
-
-    styles = getSampleStyleSheet()
-
-    # Title
-    content.append(Paragraph("Sales Forecast Results", styles['Title']))
-
-    # Add forecast sales table
-    data = [['Serial Number', 'Date', 'Forecasted Sales', 'Lower Bound', 'Upper Bound']]
-    for index, row in forecast_sales_df.iterrows():
-        data.append([
-            row['Serial Number'],
-            row['Date'].strftime('%B %Y'),
-            f"{row['Forecasted Sales']:.2f}",
-            f"{row['Lower Bound']:.2f}",
-            f"{row['Upper Bound']:.2f}"
-        ])
-
-    table = Table(data)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-    content.append(table)
-
-    # Add explanation
-    content.append(Paragraph("Explanation:", styles['Heading2']))
-    content.append(Paragraph(explanation, styles['BodyText']))
-
-    # Add summary
-    content.append(Paragraph("Summary:", styles['Heading2']))
-    content.append(Paragraph(summary, styles['BodyText']))
-
-    # Add recommendations
-    content.append(Paragraph("Recommendations:", styles['Heading2']))
-    content.append(Paragraph(recommendations, styles['BodyText']))
-
-    # Add graph image
-    img = Image(img_buffer)
-    img.drawHeight = 4*inch
-    img.drawWidth = 6*inch
-    content.append(img)
-
-    doc.build(content)
-    buffer.seek(0)
-
-    # Send the PDF as a response
-    response = make_response(buffer.getvalue())
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=sales_forecast_results.pdf'
-    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
